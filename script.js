@@ -76,20 +76,20 @@ const gameData = {
     unlockedWorlds: ['heal'],
     worldProgress: { heal: 0, fire: 0, earth: 0, pas: 0 },
     missionsByWorld: {
-        heal: ['pas', 'signos', 'matriz'],
+        heal: ['rcp', 'vendaje', 'quemadura'],
         fire: ['extintor', 'clasificacion', 'peligros'],
         earth: ['sismico', 'zonas', 'evacuacion'],
-        pas: ['pas', 'evacuacion', 'examen']
+        pas: ['pas', 'examen']
     },
     currentMission: null
 };
 
 const ranks = [
     { name: 'Cadete', minXP: 0 },
-    { name: 'Guardián', minXP: 100 },
-    { name: 'Héroe', minXP: 300 },
-    { name: 'Leyenda', minXP: 600 },
-    { name: 'Máster CAEE', minXP: 1000 }
+    { name: 'Guardián PC', minXP: 100 },
+    { name: 'Héroe PC', minXP: 300 },
+    { name: 'Comandante', minXP: 600 },
+    { name: 'Máster PC', minXP: 1000 }
 ];
 
 // ========== FUNCIONES DE PROGRESIÓN ==========
@@ -140,6 +140,7 @@ function completeMission(earnedStars, earnedXP, rescueAnimation) {
     playSound('victory');
     addStars(earnedStars);
     addXP(earnedXP);
+    launchConfetti();
     
     const missionsTotal = gameData.missionsByWorld[gameData.player.currentWorld].length;
     const newProgress = ((gameData.player.currentMissionIndex + 1) / missionsTotal) * 100;
@@ -161,18 +162,35 @@ function completeMission(earnedStars, earnedXP, rescueAnimation) {
     gameData.player.currentMissionIndex++;
     saveGame();
     
-    // Desbloquear mundos
     if (gameData.player.currentWorld === 'heal' && !gameData.unlockedWorlds.includes('fire')) {
         gameData.unlockedWorlds.push('fire');
-        showTemporaryMessage('🌟 ¡NUEVO MUNDO: MAESTRO DEL FUEGO DESBLOQUEADO! 🌟');
+        showTemporaryMessage('🌟 ¡NUEVO MUNDO: PREVENCIÓN DE INCENDIOS DESBLOQUEADO! 🌟');
     }
     if (gameData.player.currentWorld === 'fire' && !gameData.unlockedWorlds.includes('earth')) {
         gameData.unlockedWorlds.push('earth');
-        showTemporaryMessage('🌟 ¡NUEVO MUNDO: GUARDIÁN DE LA TIERRA DESBLOQUEADO! 🌟');
+        showTemporaryMessage('🌟 ¡NUEVO MUNDO: SEGURIDAD SÍSMICA DESBLOQUEADO! 🌟');
     }
     if (gameData.player.currentWorld === 'earth' && !gameData.unlockedWorlds.includes('pas')) {
         gameData.unlockedWorlds.push('pas');
-        showTemporaryMessage('🌟 ¡NUEVO MUNDO: COMANDANTE P.A.S. DESBLOQUEADO! 🌟');
+        showTemporaryMessage('🌟 ¡NUEVO MUNDO: PROTOCOLO P.A.S. DESBLOQUEADO! 🌟');
+    }
+}
+
+function launchConfetti() {
+    const container = document.getElementById('confetti-container');
+    if (!container) return;
+    
+    for (let i = 0; i < 100; i++) {
+        const confetti = document.createElement('div');
+        confetti.className = 'confetti';
+        confetti.style.left = Math.random() * 100 + '%';
+        confetti.style.background = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        confetti.style.width = Math.random() * 8 + 4 + 'px';
+        confetti.style.height = Math.random() * 8 + 4 + 'px';
+        confetti.style.animationDelay = Math.random() * 2 + 's';
+        confetti.style.animationDuration = Math.random() * 2 + 2 + 's';
+        container.appendChild(confetti);
+        setTimeout(() => confetti.remove(), 3000);
     }
 }
 
@@ -183,6 +201,7 @@ function showRescueAnimation(animationType) {
     const animations = {
         'vendaje': '🩹 ¡Has vendado la herida correctamente! El paciente está a salvo.',
         'rcp': '🫀 ¡RCP aplicada! La persona recupera la conciencia.',
+        'quemadura': '💧 ¡Quemadura tratada con agua fría! La piel está a salvo.',
         'extintor': '🧯 ¡Fuego extinguido! Todos están a salvo.',
         'evacuacion': '🚪 ¡Evacuación exitosa! Todos salieron sin peligro.',
         'sismo': '🏠 ¡Protección correcta! Nadie resultó herido.',
@@ -287,7 +306,6 @@ function updateGameHeroUI() {
     if (nameEl) nameEl.textContent = gameData.player.name;
 }
 
-// ========== SELECCIÓN DE HÉROE ==========
 function selectHero(heroKey) {
     const hero = gameData.heroes[heroKey];
     if (!hero || !hero.unlocked) {
@@ -307,11 +325,10 @@ function selectHero(heroKey) {
     saveGame();
 }
 
-// ========== MISIONES ==========
 function startMission(missionId) {
     gameData.currentMission = missionId;
     const missionEl = document.getElementById('mission-name');
-    if (missionEl) missionEl.textContent = `Misión: ${missionId.toUpperCase()}`;
+    if (missionEl) missionEl.textContent = `Misión: ${getMissionName(missionId)}`;
     
     updateGameHeroUI();
     
@@ -323,6 +340,23 @@ function startMission(missionId) {
     }
 }
 
+function getMissionName(missionId) {
+    const names = {
+        'rcp': 'RCP - Reanimación Cardiopulmonar',
+        'vendaje': 'Vendaje de Heridas',
+        'quemadura': 'Tratamiento de Quemaduras',
+        'extintor': 'Uso del Extintor',
+        'clasificacion': 'Clasificación de Fuegos',
+        'peligros': 'Detección de Peligros',
+        'sismico': 'Defensa Sísmica',
+        'zonas': 'Zonas Seguras',
+        'evacuacion': 'Evacuación de Emergencia',
+        'pas': 'Protocolo P.A.S.',
+        'examen': 'Examen Final'
+    };
+    return names[missionId] || missionId.toUpperCase();
+}
+
 function failMission() {
     playSound('error');
     setScreen('gameover');
@@ -331,33 +365,25 @@ function failMission() {
 // ========== MINIJUEGOS ==========
 const MiniGames = {};
 
-MiniGames.pas = {
+MiniGames.rcp = {
     start() {
-        const scenarios = [
-            { text: 'Ves a una persona inconsciente en medio de la calle con tráfico', correct: 'Proteger', rescue: 'proteger' },
-            { text: 'Encuentras un incendio en tu escuela y tus compañeros no lo saben', correct: 'Avisar', rescue: 'evacuacion' },
-            { text: 'Tu amigo se cortó profundamente y sangra mucho', correct: 'Socorrer', rescue: 'vendaje' }
-        ];
-        const s = scenarios[Math.floor(Math.random() * scenarios.length)];
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
-            <h3 style="color: cyan;">🛡️ PROTOCOLO P.A.S. 📢🩺</h3>
-            <p style="font-size: 1.2rem; text-align: center;">${s.text}</p>
-            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
-                <button class="option-btn" data-opt="Proteger">🛡️ PROTEGER</button>
-                <button class="option-btn" data-opt="Avisar">📢 AVISAR</button>
-                <button class="option-btn" data-opt="Socorrer">🩺 SOCORRER</button>
+            <h3 style="color: cyan;">🫀 REANIMACIÓN CARDIOPULMONAR (RCP)</h3>
+            <p style="font-size: 1.1rem;">Encuentras a una persona inconsciente que no respira. ¿Qué haces?</p>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center; margin-top: 20px;">
+                <button class="option-btn" data-correct="true">Llamar al 911 y comenzar RCP (30 compresiones, 2 ventilaciones)</button>
+                <button class="option-btn" data-correct="false">Darle agua y esperar que despierte</button>
+                <button class="option-btn" data-correct="false">Moverlo y sentarlo rápidamente</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.opt === s.correct) {
-                    completeMission(2, 25, s.rescue);
+                if (btn.dataset.correct === 'true') {
+                    completeMission(3, 30, 'rcp');
                 } else {
-                    showGameFeedback(`Error. El orden es: Proteger → Avisar → Socorrer`, true);
+                    showGameFeedback('¡Incorrecto! Lo correcto es llamar a emergencias y comenzar RCP inmediatamente', true);
                     setTimeout(() => this.start(), 2000);
                 }
             };
@@ -365,77 +391,51 @@ MiniGames.pas = {
     }
 };
 
-MiniGames.signos = {
+MiniGames.vendaje = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
-            <h3 style="color: cyan;">🫀 DETECTA SIGNOS VITALES</h3>
-            <p>Selecciona los 3 signos vitales básicos:</p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                <button class="option-btn" data-val="respiracion">Respiración</button>
-                <button class="option-btn" data-val="pulso">Pulso</button>
-                <button class="option-btn" data-val="conciencia">Conciencia</button>
-                <button class="option-btn" data-val="presion">Presión Arterial</button>
+            <h3 style="color: cyan;">🩹 VENDAJE DE HERIDAS</h3>
+            <p style="font-size: 1.1rem;">Un compañero se cortó el brazo y sangra moderadamente. ¿Cuál es el primer paso?</p>
+            <div style="display: flex; gap: 15px; flex-direction: column; align-items: center; margin-top: 20px;">
+                <button class="option-btn" data-correct="true">Limpiar la herida con agua y aplicar presión con una gasa</button>
+                <button class="option-btn" data-correct="false">Aplicar alcohol directamente sobre la herida</button>
+                <button class="option-btn" data-correct="false">Vendar sin limpiar para no perder tiempo</button>
             </div>
-            <div id="selected-signos" style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;"></div>
         `;
-        
-        let selected = [];
-        const selectedDiv = document.getElementById('selected-signos');
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                const val = btn.dataset.val;
-                if (!selected.includes(val) && val !== 'presion' && selected.length < 3) {
-                    selected.push(val);
-                    if (selectedDiv) {
-                        selectedDiv.innerHTML += `<span style="background: cyan; padding: 5px 10px; border-radius: 20px;">${btn.textContent}</span>`;
-                    }
-                    playSound('click');
-                }
-                if (selected.length === 3) {
-                    if (selected.includes('respiracion') && selected.includes('pulso') && selected.includes('conciencia')) {
-                        completeMission(2, 20, 'rcp');
-                    } else {
-                        showGameFeedback('¡Incorrecto! Los signos vitales son: Respiración, Pulso y Conciencia', true);
-                        setTimeout(() => this.start(), 2000);
-                    }
+                if (btn.dataset.correct === 'true') {
+                    completeMission(3, 25, 'vendaje');
+                } else {
+                    showGameFeedback('¡Incorrecto! Primero lava suavemente con agua, luego aplica presión con una gasa estéril', true);
+                    setTimeout(() => this.start(), 2000);
                 }
             };
         });
     }
 };
 
-MiniGames.matriz = {
+MiniGames.quemadura = {
     start() {
-        const questions = [
-            { text: 'Quemadura leve por agua caliente', correct: 'Agua fría 15 minutos', rescue: 'vendaje' },
-            { text: 'Persona inconsciente que respira', correct: 'Posición lateral de seguridad', rescue: 'rcp' },
-            { text: 'Sangrado nasal abundante', correct: 'Inclinar cabeza adelante', rescue: 'vendaje' }
-        ];
-        const q = questions[Math.floor(Math.random() * questions.length)];
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
-            <h3 style="color: cyan;">⚡ MATRIZ DE ACCIÓN RÁPIDA</h3>
-            <p style="font-size: 1.2rem;">${q.text}</p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
-                <button class="option-btn" data-act="Agua fría 15 minutos">Agua fría 15 min</button>
-                <button class="option-btn" data-act="Posición lateral de seguridad">Posición lateral</button>
-                <button class="option-btn" data-act="Inclinar cabeza adelante">Inclinar cabeza adelante</button>
-                <button class="option-btn" data-act="Aplicar hielo directo">Aplicar hielo directo</button>
+            <h3 style="color: cyan;">💧 TRATAMIENTO DE QUEMADURAS</h3>
+            <p style="font-size: 1.1rem;">Tu amigo se quema la mano con agua caliente. ¿Qué haces primero?</p>
+            <div style="display: flex; gap: 15px; flex-direction: column; align-items: center; margin-top: 20px;">
+                <button class="option-btn" data-correct="true">Enfriar la quemadura con agua fría durante 15 minutos</button>
+                <button class="option-btn" data-correct="false">Aplicar hielo directamente sobre la piel</button>
+                <button class="option-btn" data-correct="false">Poner crema o ungüento inmediatamente</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.act === q.correct) {
-                    completeMission(2, 20, q.rescue);
+                if (btn.dataset.correct === 'true') {
+                    completeMission(3, 25, 'quemadura');
                 } else {
-                    showGameFeedback(`Incorrecto. La acción correcta es: ${q.correct}`, true);
+                    showGameFeedback('¡Incorrecto! Lo correcto es enfriar con agua fría (no hielo) durante 15 minutos', true);
                     setTimeout(() => this.start(), 2000);
                 }
             };
@@ -446,47 +446,54 @@ MiniGames.matriz = {
 MiniGames.extintor = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
-            <h3 style="color: cyan;">🧯 SIMULADOR DE EXTINTOR</h3>
-            <div style="background: rgba(255,50,0,0.3); padding: 20px; border-radius: 30px; text-align: left;">
-                <div>✅ 1. Tirar del pasador de seguridad</div>
-                <div>✅ 2. Apuntar a la base del fuego</div>
-                <div>✅ 3. Presionar la palanca</div>
-                <div>✅ 4. Barrer lateralmente</div>
+            <h3 style="color: cyan;">🧯 USO DEL EXTINTOR</h3>
+            <div style="background: rgba(255,50,0,0.3); padding: 20px; border-radius: 30px; text-align: left; margin-bottom: 20px;">
+                <div>✅ PASO 1: Tirar del pasador de seguridad</div>
+                <div>✅ PASO 2: Apuntar a la BASE del fuego</div>
+                <div>✅ PASO 3: Presionar la palanca</div>
+                <div>✅ PASO 4: Barrer lateralmente</div>
             </div>
-            <button id="extinguish-action" class="option-btn" style="background: #ff4400; font-size: 1.3rem;">🔥 APAGAR FUEGO 🔥</button>
+            <p>¿Hacia dónde debes apuntar el extintor?</p>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <button class="option-btn" data-correct="true">A la base del fuego</button>
+                <button class="option-btn" data-correct="false">A las llamas altas</button>
+                <button class="option-btn" data-correct="false">Al techo</button>
+            </div>
         `;
         
-        const btn = document.getElementById('extinguish-action');
-        if (btn) {
-            btn.onclick = () => completeMission(3, 35, 'extintor');
-        }
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.onclick = () => {
+                if (btn.dataset.correct === 'true') {
+                    completeMission(3, 35, 'extintor');
+                } else {
+                    showGameFeedback('¡Incorrecto! Siempre apunta a la BASE del fuego', true);
+                    setTimeout(() => this.start(), 2000);
+                }
+            };
+        });
     }
 };
 
 MiniGames.clasificacion = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
             <h3 style="color: cyan;">🔥 CLASIFICACIÓN DE FUEGOS</h3>
-            <p>Fuego de aceite de cocina → ¿Clase?</p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="option-btn" data-class="A">Clase A (Sólidos)</button>
-                <button class="option-btn" data-class="B">Clase B (Líquidos)</button>
-                <button class="option-btn" data-class="C">Clase C (Gases)</button>
+            <p>¿Qué tipo de extintor usarías para un incendio ELÉCTRICO?</p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                <button class="option-btn" data-correct="true">Clase C (extintor de CO2 o Polvo ABC)</button>
+                <button class="option-btn" data-correct="false">Clase A (agua)</button>
+                <button class="option-btn" data-correct="false">Clase B (líquidos inflamables)</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.class === 'B') {
+                if (btn.dataset.correct === 'true') {
                     completeMission(2, 20, 'extintor');
                 } else {
-                    showGameFeedback('¡Incorrecto! Aceite de cocina es Clase B (líquidos inflamables)', true);
+                    showGameFeedback('¡Incorrecto! Para fuegos eléctricos se usa extintor de CO2 o Polvo ABC (Clase C)', true);
                     setTimeout(() => this.start(), 2000);
                 }
             };
@@ -497,24 +504,22 @@ MiniGames.clasificacion = {
 MiniGames.peligros = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
             <h3 style="color: cyan;">🔍 DETECTOR DE PELIGROS</h3>
-            <p>¿Cuál es un peligro de incendio?</p>
-            <div style="display: flex; flex-direction: column; gap: 10px;">
-                <button class="option-btn" data-danger="enchufe">Enchufe sobrecargado</button>
-                <button class="option-btn" data-danger="manta">Manta en el suelo</button>
-                <button class="option-btn" data-danger="juguete">Juguete en la mesa</button>
+            <p>Identifica el peligro más GRAVE:</p>
+            <div style="display: flex; flex-direction: column; gap: 10px; align-items: center;">
+                <button class="option-btn" data-correct="true">🔌 Enchufe múltiple sobrecargado y cables pelados</button>
+                <button class="option-btn" data-correct="false">📚 Libros desordenados en el escritorio</button>
+                <button class="option-btn" data-correct="false">🪑 Una silla fuera de su lugar</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.danger === 'enchufe') {
+                if (btn.dataset.correct === 'true') {
                     completeMission(2, 20, 'default');
                 } else {
-                    showGameFeedback('¡Peligro no detectado! La sobrecarga eléctrica es un riesgo grave', true);
+                    showGameFeedback('¡Peligro no detectado! La sobrecarga eléctrica es un riesgo grave de incendio', true);
                     setTimeout(() => this.start(), 2000);
                 }
             };
@@ -525,21 +530,20 @@ MiniGames.peligros = {
 MiniGames.sismico = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
             <h3 style="color: cyan;">🌍 ¡SISMO! DEFENSA SÍSMICA</h3>
             <p style="font-size: 1.3rem; animation: shake 0.5s infinite;">🏢⚠️ ¡TIEMBLA FUERTE! ⚠️🏢</p>
-            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                <button class="option-btn" data-act="agachate">Agáchate</button>
-                <button class="option-btn" data-act="corre">Corre afuera</button>
-                <button class="option-btn" data-act="sujetate">Cúbrete y Sujétate</button>
+            <p>¿Cuál es la acción correcta durante un sismo?</p>
+            <div style="display: flex; gap: 15px; flex-wrap: wrap; justify-content: center;">
+                <button class="option-btn" data-correct="true">Agáchate, cúbrete y sujétate bajo una mesa resistente</button>
+                <button class="option-btn" data-correct="false">Corre hacia la salida inmediatamente</button>
+                <button class="option-btn" data-correct="false">Párate junto a una ventana</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.act === 'agachate' || btn.dataset.act === 'sujetate') {
+                if (btn.dataset.correct === 'true') {
                     completeMission(3, 30, 'sismo');
                 } else {
                     showGameFeedback('¡Error! Nunca corras durante el sismo. Agáchate, cúbrete y sujétate', true);
@@ -553,24 +557,22 @@ MiniGames.sismico = {
 MiniGames.zonas = {
     start() {
         const container = document.getElementById('game-area');
-        if (!container) return;
-        
         container.innerHTML = `
-            <h3 style="color: cyan;">🏠 ZONAS SEGURAS</h3>
-            <p>¿Dónde debes protegerte durante un sismo?</p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="option-btn" data-zone="ventana">Junto a ventana</button>
-                <button class="option-btn" data-zone="pilar">Bajo mesa o pilar</button>
-                <button class="option-btn" data-zone="ascensor">Dentro del ascensor</button>
+            <h3 style="color: cyan;">🏠 ZONAS SEGURAS DURANTE UN SISMO</h3>
+            <p>Si estás en tu casa, ¿DÓNDE es más seguro protegerse?</p>
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                <button class="option-btn" data-correct="true">Bajo una mesa resistente o junto a un pilar</button>
+                <button class="option-btn" data-correct="false">Junto a una ventana grande</button>
+                <button class="option-btn" data-correct="false">Dentro del ascensor</button>
             </div>
         `;
         
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.onclick = () => {
-                if (btn.dataset.zone === 'pilar') {
+                if (btn.dataset.correct === 'true') {
                     completeMission(2, 20, 'sismo');
                 } else {
-                    showGameFeedback('Zona insegura. Busca una mesa resistente o pilar estructural', true);
+                    showGameFeedback('Zona insegura. Busca una mesa resistente o un pilar estructural', true);
                     setTimeout(() => this.start(), 2000);
                 }
             };
@@ -589,7 +591,7 @@ MiniGames.evacuacion = {
             if (!container) return;
             
             let html = '<h3 style="color: cyan;">🚪 EVACUACIÓN SEGURA - LABERINTO</h3>';
-            html += '<p>Lleva al héroe a la salida (🟢)</p>';
+            html += '<p>Lleva a tu héroe (🔴) hasta la salida (🟢)</p>';
             html += '<div class="maze-container">';
             
             for (let row = 0; row < 5; row++) {
@@ -610,15 +612,10 @@ MiniGames.evacuacion = {
             html += '</div>';
             container.innerHTML = html;
             
-            const upBtn = document.getElementById('move-up');
-            const downBtn = document.getElementById('move-down');
-            const leftBtn = document.getElementById('move-left');
-            const rightBtn = document.getElementById('move-right');
-            
-            if (upBtn) upBtn.onclick = () => movePlayer(-1, 0);
-            if (downBtn) downBtn.onclick = () => movePlayer(1, 0);
-            if (leftBtn) leftBtn.onclick = () => movePlayer(0, -1);
-            if (rightBtn) rightBtn.onclick = () => movePlayer(0, 1);
+            document.getElementById('move-up').onclick = () => movePlayer(-1, 0);
+            document.getElementById('move-down').onclick = () => movePlayer(1, 0);
+            document.getElementById('move-left').onclick = () => movePlayer(0, -1);
+            document.getElementById('move-right').onclick = () => movePlayer(0, 1);
         };
         
         const movePlayer = (dx, dy) => {
@@ -644,12 +641,40 @@ MiniGames.evacuacion = {
     }
 };
 
+MiniGames.pas = {
+    start() {
+        const container = document.getElementById('game-area');
+        container.innerHTML = `
+            <h3 style="color: cyan;">🛡️ PROTOCOLO P.A.S.</h3>
+            <p>¿Cuál es el orden CORRECTO del protocolo PAS ante una emergencia?</p>
+            <div style="display: flex; gap: 15px; flex-direction: column; align-items: center; margin-top: 20px;">
+                <button class="option-btn" data-correct="true">PROTEGER → AVISAR → SOCORRER</button>
+                <button class="option-btn" data-correct="false">SOCORRER → AVISAR → PROTEGER</button>
+                <button class="option-btn" data-correct="false">AVISAR → SOCORRER → PROTEGER</button>
+            </div>
+        `;
+        
+        document.querySelectorAll('.option-btn').forEach(btn => {
+            btn.onclick = () => {
+                if (btn.dataset.correct === 'true') {
+                    completeMission(3, 25, 'proteger');
+                } else {
+                    showGameFeedback('Error. El orden correcto es: PROTEGER → AVISAR → SOCORRER', true);
+                    setTimeout(() => this.start(), 2000);
+                }
+            };
+        });
+    }
+};
+
 MiniGames.examen = {
     start() {
         const questions = [
-            { q: '¿Cuál es el primer paso del protocolo PAS?', a: 'proteger', valid: ['proteger', 'protege'] },
-            { q: '¿Qué número de emergencias debemos llamar?', a: '112', valid: ['112', '911'] },
-            { q: '¿Qué haces durante un sismo?', a: 'agacharse cubrirse', valid: ['agacharse', 'cubrirse', 'sujetarse'] }
+            { q: '¿Cuál es el primer paso del protocolo PAS?', correct: 'Proteger', options: ['Proteger', 'Avisar', 'Socorrer'] },
+            { q: '¿Qué número de emergencias debemos llamar en Venezuela?', correct: '911', options: ['911', '112', '171'] },
+            { q: '¿Qué haces durante un sismo?', correct: 'Agacharse, cubrirse, sujetarse', options: ['Agacharse, cubrirse, sujetarse', 'Correr hacia la salida', 'Pararse junto a la ventana'] },
+            { q: '¿Qué tipo de extintor usas para un incendio eléctrico?', correct: 'Clase C (CO2 o Polvo ABC)', options: ['Clase A (agua)', 'Clase B (líquidos)', 'Clase C (CO2 o Polvo ABC)'] },
+            { q: '¿Cuánto tiempo debes enfriar una quemadura con agua?', correct: '15 minutos', options: ['5 minutos', '15 minutos', '30 minutos'] }
         ];
         let currentQ = 0;
         let score = 0;
@@ -663,33 +688,27 @@ MiniGames.examen = {
             
             const q = questions[currentQ];
             const container = document.getElementById('game-area');
-            if (!container) return;
-            
             container.innerHTML = `
-                <h3 style="color: cyan;">📝 EXAMEN FINAL - AGENTE CAEE</h3>
+                <h3 style="color: cyan;">📝 EXAMEN FINAL - PROTECCIÓN CIVIL VENEZUELA</h3>
                 <p>Pregunta ${currentQ + 1}/${questions.length}</p>
-                <p style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px;">${q.q}</p>
-                <input type="text" id="exam-answer" placeholder="Escribe tu respuesta..." style="padding: 12px; width: 80%; max-width: 300px; border-radius: 30px; background: rgba(0,0,0,0.7); color: white; border: 2px solid cyan;">
-                <button id="submit-exam" class="option-btn">Responder</button>
+                <p style="background: rgba(0,0,0,0.6); padding: 20px; border-radius: 20px; margin: 20px 0;">${q.q}</p>
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; justify-content: center;">
+                    ${q.options.map(opt => `<button class="option-btn" data-ans="${opt}">${opt}</button>`).join('')}
+                </div>
             `;
             
-            const submitBtn = document.getElementById('submit-exam');
-            if (submitBtn) {
-                submitBtn.onclick = () => {
-                    const answerInput = document.getElementById('exam-answer');
-                    const answer = answerInput ? answerInput.value.toLowerCase().trim() : '';
-                    const isValid = q.valid.some(v => answer.includes(v));
-                    
-                    if (isValid) {
+            document.querySelectorAll('.option-btn').forEach(btn => {
+                btn.onclick = () => {
+                    if (btn.dataset.ans === q.correct) {
                         showGameFeedback('✅ ¡Correcto!');
                         score++;
                     } else {
-                        showGameFeedback(`❌ Incorrecto. Respuesta: ${q.a}`, true);
+                        showGameFeedback(`❌ Incorrecto. Respuesta correcta: ${q.correct}`, true);
                     }
                     currentQ++;
                     setTimeout(showQuestion, 2000);
                 };
-            }
+            });
         };
         
         showQuestion();
@@ -708,7 +727,6 @@ function launchFireworks() {
         firework.style.top = Math.random() * 100 + '%';
         firework.style.setProperty('--x', (Math.random() - 0.5) * 200 + 'px');
         firework.style.setProperty('--y', (Math.random() - 0.5) * 200 + 'px');
-        firework.style.animationDelay = Math.random() * 2 + 's';
         container.appendChild(firework);
         setTimeout(() => firework.remove(), 2000);
     }
@@ -721,12 +739,12 @@ function initParticles() {
     for (let i = 0; i < 100; i++) {
         const particle = document.createElement('div');
         particle.style.position = 'absolute';
-        particle.style.width = '2px';
-        particle.style.height = '2px';
-        particle.style.background = `rgba(0, 243, 255, ${Math.random() * 0.5})`;
+        particle.style.width = '3px';
+        particle.style.height = '3px';
+        particle.style.background = `rgba(0, 51, 160, ${Math.random() * 0.5})`;
         particle.style.left = Math.random() * 100 + '%';
         particle.style.top = Math.random() * 100 + '%';
-        particle.style.animation = `float ${Math.random() * 10 + 5}s linear infinite`;
+        particle.style.borderRadius = '50%';
         particleField.appendChild(particle);
     }
 }
@@ -737,14 +755,13 @@ function saveGame() {
         player: gameData.player,
         unlockedWorlds: gameData.unlockedWorlds,
         worldProgress: gameData.worldProgress,
-        selectedHero: gameData.selectedHero,
-        heroes: gameData.heroes
+        selectedHero: gameData.selectedHero
     };
-    localStorage.setItem('caee_hero_save', JSON.stringify(saveData));
+    localStorage.setItem('pc_venezuela_save', JSON.stringify(saveData));
 }
 
 function loadGame() {
-    const saved = localStorage.getItem('caee_hero_save');
+    const saved = localStorage.getItem('pc_venezuela_save');
     if (saved) {
         try {
             const data = JSON.parse(saved);
@@ -752,7 +769,6 @@ function loadGame() {
             gameData.unlockedWorlds = data.unlockedWorlds;
             gameData.worldProgress = data.worldProgress;
             gameData.selectedHero = data.selectedHero;
-            if (data.heroes) gameData.heroes = data.heroes;
         } catch(e) { console.log('Error loading save'); }
     }
 }
@@ -797,7 +813,6 @@ document.getElementById('audio-toggle-main')?.addEventListener('click', () => {
     playSound('click');
 });
 
-// Botones de selección de héroe
 document.querySelectorAll('.hero-select-btn').forEach(btn => {
     btn.addEventListener('click', (e) => {
         e.stopPropagation();
@@ -806,29 +821,25 @@ document.querySelectorAll('.hero-select-btn').forEach(btn => {
     });
 });
 
-// Click en toda la tarjeta del héroe
 document.querySelectorAll('.hero-card').forEach(card => {
     card.addEventListener('click', () => {
         const heroKey = card.dataset.hero;
         if (gameData.heroes[heroKey]?.unlocked) {
             selectHero(heroKey);
-        } else {
-            playSound('error');
-            showTemporaryMessage(`🔒 ${gameData.heroes[heroKey]?.name || 'Héroe'} bloqueado.`);
         }
     });
 });
 
-// Selección de mundos
-document.querySelectorAll('.world-card[data-world]').forEach(card => {
+document.querySelectorAll('.world-card').forEach(card => {
     card.addEventListener('click', () => {
+        const world = card.dataset.world;
+        
         if (!gameData.selectedHero) {
             showTemporaryMessage('⚠️ Primero debes seleccionar un héroe');
             setScreen('hero-select');
             return;
         }
         
-        const world = card.dataset.world;
         if (gameData.unlockedWorlds.includes(world)) {
             playSound('click');
             gameData.player.currentWorld = world;
@@ -874,4 +885,4 @@ document.body.addEventListener('click', () => {
     }
 }, { once: true });
 
-console.log('🎮 CAEE Hero Academy - Héroes: Ramona, Wilmer, Reinaldo, Vegita');
+console.log('🎮 PC Venezuela - Juego de Gestión de Riesgo listo! 🇻🇪');
