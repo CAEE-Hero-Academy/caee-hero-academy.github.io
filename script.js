@@ -58,11 +58,10 @@ const gameData = {
     currentScreen: 'loading',
     selectedHero: null,
     heroes: {
-        alex: { name: 'ALEX', title: 'Maestro del Fuego', icon: '🔥', badge: '🧯', unlocked: true, specialty: 'Incendios', color: '#ff4400' },
-        sofia: { name: 'SOFÍA', title: 'Poderes Curativos', icon: '🩺', badge: '🩹', unlocked: true, specialty: 'Primeros Auxilios', color: '#00ff88' },
-        mateo: { name: 'MATEO', title: 'Guardián de la Tierra', icon: '🌍', badge: '🏠', unlocked: false, specialty: 'Seguridad Sísmica', color: '#44ff44' },
-        luna: { name: 'LUNA', title: 'Detective de Riesgos', icon: '🔍', badge: '⚠️', unlocked: false, specialty: 'Detección de Peligros', color: '#ffaa00' },
-        kai: { name: 'KAI', title: 'Comandante P.A.S.', icon: '⚡', badge: '🛡️', unlocked: false, specialty: 'Protocolo P.A.S.', color: '#aa44ff' }
+        ramona: { name: 'RAMONA', title: 'Poderes Curativos', icon: '🩺', badge: '🩹', unlocked: true, specialty: 'Primeros Auxilios', color: '#00ff88' },
+        wilmer: { name: 'WILMER', title: 'Maestro del Fuego', icon: '🔥', badge: '🧯', unlocked: true, specialty: 'Incendios', color: '#ff4400' },
+        reinaldo: { name: 'REINALDO', title: 'Guardián de la Tierra', icon: '🌍', badge: '🏠', unlocked: true, specialty: 'Seguridad Sísmica', color: '#44ff44' },
+        vegita: { name: 'VEGITA', title: 'Comandante P.A.S.', icon: '⚡', badge: '🛡️', unlocked: true, specialty: 'Protocolo P.A.S.', color: '#aa44ff' }
     },
     player: {
         name: '',
@@ -75,12 +74,11 @@ const gameData = {
         currentMissionIndex: 0
     },
     unlockedWorlds: ['heal'],
-    worldProgress: { heal: 0, fire: 0, earth: 0, risks: 0, pas: 0 },
+    worldProgress: { heal: 0, fire: 0, earth: 0, pas: 0 },
     missionsByWorld: {
         heal: ['pas', 'signos', 'matriz'],
         fire: ['extintor', 'clasificacion', 'peligros'],
         earth: ['sismico', 'zonas', 'evacuacion'],
-        risks: ['peligros', 'extintor', 'sismico'],
         pas: ['pas', 'evacuacion', 'examen']
     },
     currentMission: null
@@ -159,28 +157,18 @@ function completeMission(earnedStars, earnedXP, rescueAnimation) {
     gameData.player.currentMissionIndex++;
     saveGame();
     
-    // Desbloquear mundos y héroes
+    // Desbloquear mundos secuencialmente
     if (gameData.player.currentWorld === 'heal' && !gameData.unlockedWorlds.includes('fire')) {
         gameData.unlockedWorlds.push('fire');
         showTemporaryMessage('🌟 ¡NUEVO MUNDO: MAESTRO DEL FUEGO DESBLOQUEADO! 🌟');
     }
     if (gameData.player.currentWorld === 'fire' && !gameData.unlockedWorlds.includes('earth')) {
         gameData.unlockedWorlds.push('earth');
-        gameData.heroes.mateo.unlocked = true;
-        showTemporaryMessage('🌟 ¡HÉROE DESBLOQUEADO: MATEO - GUARDIÁN DE LA TIERRA! 🌟');
-        updateHeroSelectUI();
+        showTemporaryMessage('🌟 ¡NUEVO MUNDO: GUARDIÁN DE LA TIERRA DESBLOQUEADO! 🌟');
     }
-    if (gameData.player.currentWorld === 'earth' && !gameData.unlockedWorlds.includes('risks')) {
-        gameData.unlockedWorlds.push('risks');
-        gameData.heroes.luna.unlocked = true;
-        showTemporaryMessage('🌟 ¡HÉROE DESBLOQUEADO: LUNA - DETECTIVE DE RIESGOS! 🌟');
-        updateHeroSelectUI();
-    }
-    if (gameData.player.currentWorld === 'risks' && !gameData.unlockedWorlds.includes('pas')) {
+    if (gameData.player.currentWorld === 'earth' && !gameData.unlockedWorlds.includes('pas')) {
         gameData.unlockedWorlds.push('pas');
-        gameData.heroes.kai.unlocked = true;
-        showTemporaryMessage('🌟 ¡HÉROE DESBLOQUEADO: KAI - COMANDANTE P.A.S.! 🌟');
-        updateHeroSelectUI();
+        showTemporaryMessage('🌟 ¡NUEVO MUNDO: COMANDANTE P.A.S. DESBLOQUEADO! 🌟');
     }
 }
 
@@ -262,7 +250,7 @@ function updateMainUI() {
         `;
     }
     
-    const worlds = ['heal', 'fire', 'earth', 'risks', 'pas'];
+    const worlds = ['heal', 'fire', 'earth', 'pas'];
     worlds.forEach(world => {
         const lock = document.getElementById(`lock-${world}`);
         const progressFill = document.querySelector(`.world-card[data-world="${world}"] .world-progress-fill`);
@@ -296,7 +284,6 @@ function updateHeroSelectUI() {
                 if (lockDiv) lockDiv.style.display = 'none';
                 if (selectBtn) selectBtn.style.display = 'block';
                 
-                // Actualizar visual del héroe
                 const visualDiv = card.querySelector('.hero-visual');
                 if (visualDiv) {
                     visualDiv.style.borderColor = hero.color;
@@ -858,4 +845,4 @@ document.body.addEventListener('click', () => {
     }
 }, { once: true });
 
-console.log('🎮 CAEE Hero Academy - ¡Juego listo! El pequeño héroe que salva vidas');   
+console.log('🎮 CAEE Hero Academy - ¡Juego listo! Héroe: Ramona, Wilmer, Reinaldo, Vegita');
