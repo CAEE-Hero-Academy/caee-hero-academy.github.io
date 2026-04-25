@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="description" content="CAEE Hero Academy - El pequeño héroe que salva vidas">
-    <title>CAEE Hero Academy | El pequeño héroe que salva vidas</title>
+    <meta name="description" content="PC Venezuela - Aprende Gestión de Riesgo jugando | Protección Civil Venezuela">
+    <title>PC Venezuela | Aprende Gestión de Riesgo</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -13,14 +13,15 @@
 <body>
 
 <div id="app">
-    <!-- PANTALLA DE CARGA -->
-    <div id="loading-screen" class="screen">
+    <!-- PANTALLA DE CARGA CON LOGO -->
+    <div id="loading-screen" class="screen active">
         <div class="loader-container">
-            <div class="loader-logo">🛡️</div>
+            <img src="assets/imagenes/logo.png" alt="Logo PC Venezuela" class="loader-logo-img" id="loader-logo">
             <div class="loader-bar">
                 <div class="loader-progress"></div>
             </div>
-            <p>Cargando Academia CAEE...</p>
+            <p class="loader-text">Protección Civil Venezuela</p>
+            <p class="loader-subtext">Cargando Academia de Gestión de Riesgo...</p>
         </div>
     </div>
 
@@ -32,16 +33,16 @@
         
         <div class="start-content">
             <div class="logo-epic">
-                <div class="logo-shield">🛡️</div>
+                <img src="assets/imagenes/logo.png" alt="Logo PC Venezuela" class="main-logo" id="main-logo">
                 <h1 class="game-main-title">
-                    <span class="title-caee-glow">CAEE</span>
-                    <span class="title-academy-glow">HERO ACADEMY</span>
+                    <span class="title-pc-glow">PROTECCIÓN CIVIL</span>
+                    <span class="title-sub-glow">VENEZUELA</span>
                 </h1>
-                <div class="title-subtitle">"El pequeño héroe que salva vidas"</div>
+                <div class="title-subtitle">"Aprende a salvar vidas"</div>
             </div>
 
             <div class="menu-buttons">
-                <button id="start-game-btn" class="btn-primary btn-glow-effect">
+                <button id="start-game-btn" class="btn-primary">
                     <span class="btn-icon">🎮</span>
                     <span class="btn-text">COMENZAR AVENTURA</span>
                 </button>
@@ -53,7 +54,7 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE SELECCIÓN DE HÉROE CON AVATARES -->
+    <!-- PANTALLA DE SELECCIÓN DE HÉROE -->
     <div id="hero-select-screen" class="screen">
         <div class="hero-select-container">
             <div class="hero-select-header">
@@ -62,11 +63,11 @@
                 <div class="hero-select-subtitle">Cada héroe tiene habilidades especiales para salvar vidas</div>
             </div>
 
-            <div class="heroes-grid" id="heroes-grid">
-                <!-- HÉROE 1: RAMONA - PODERES CURATIVOS -->
+            <div class="heroes-grid">
+                <!-- RAMONA -->
                 <div class="hero-card" data-hero="ramona">
                     <div class="hero-card-glow"></div>
-                    <div class="hero-visual" id="hero-visual-ramona">
+                    <div class="hero-visual">
                         <div class="hero-visual-avatar">🩺</div>
                         <div class="hero-visual-badge">🩹</div>
                     </div>
@@ -74,53 +75,47 @@
                     <div class="hero-title">Poderes Curativos</div>
                     <div class="hero-specialty">🩹 Experta en primeros auxilios</div>
                     <div class="hero-stats">
-                        <span>💪 Fuego: ★★★☆☆</span>
-                        <span>🩺 Auxilio: ★★★★★</span>
+                        <span>🩺 Primeros Auxilios: ⭐⭐⭐⭐⭐</span>
                     </div>
-                    <div class="hero-select-btn" data-hero="ramona">SELECCIONAR</div>
-                    <div class="hero-lock" style="display: none;"></div>
+                    <button class="hero-select-btn" data-hero="ramona">SELECCIONAR</button>
                 </div>
 
-                <!-- HÉROE 2: WILMER - MAESTRO DEL FUEGO -->
+                <!-- WILMER -->
                 <div class="hero-card" data-hero="wilmer">
                     <div class="hero-card-glow"></div>
-                    <div class="hero-visual" id="hero-visual-wilmer">
+                    <div class="hero-visual">
                         <div class="hero-visual-avatar">🔥</div>
                         <div class="hero-visual-badge">🧯</div>
                     </div>
                     <h3 class="hero-name">WILMER</h3>
                     <div class="hero-title">Maestro del Fuego</div>
-                    <div class="hero-specialty">🧯 Experto en incendios y extintores</div>
+                    <div class="hero-specialty">🧯 Experto en incendios</div>
                     <div class="hero-stats">
-                        <span>💪 Fuego: ★★★★★</span>
-                        <span>🩺 Auxilio: ★★★☆☆</span>
+                        <span>🧯 Manejo de Extintores: ⭐⭐⭐⭐⭐</span>
                     </div>
-                    <div class="hero-select-btn" data-hero="wilmer">SELECCIONAR</div>
-                    <div class="hero-lock" style="display: none;"></div>
+                    <button class="hero-select-btn" data-hero="wilmer">SELECCIONAR</button>
                 </div>
 
-                <!-- HÉROE 3: REINALDO - GUARDIÁN DE LA TIERRA -->
+                <!-- REINALDO -->
                 <div class="hero-card" data-hero="reinaldo">
                     <div class="hero-card-glow"></div>
-                    <div class="hero-visual" id="hero-visual-reinaldo">
+                    <div class="hero-visual">
                         <div class="hero-visual-avatar">🌍</div>
                         <div class="hero-visual-badge">🏠</div>
                     </div>
                     <h3 class="hero-name">REINALDO</h3>
                     <div class="hero-title">Guardián de la Tierra</div>
-                    <div class="hero-specialty">🏠 Experto en seguridad sísmica</div>
+                    <div class="hero-specialty">🏠 Experto en sismos</div>
                     <div class="hero-stats">
-                        <span>🌍 Sismo: ★★★★★</span>
-                        <span>🩺 Auxilio: ★★★☆☆</span>
+                        <span>🌍 Seguridad Sísmica: ⭐⭐⭐⭐⭐</span>
                     </div>
-                    <div class="hero-select-btn" data-hero="reinaldo">SELECCIONAR</div>
-                    <div class="hero-lock" style="display: none;"></div>
+                    <button class="hero-select-btn" data-hero="reinaldo">SELECCIONAR</button>
                 </div>
 
-                <!-- HÉROE 4: VEGITA - COMANDANTE P.A.S. -->
+                <!-- VEGITA -->
                 <div class="hero-card" data-hero="vegita">
                     <div class="hero-card-glow"></div>
-                    <div class="hero-visual" id="hero-visual-vegita">
+                    <div class="hero-visual">
                         <div class="hero-visual-avatar">⚡</div>
                         <div class="hero-visual-badge">🛡️</div>
                     </div>
@@ -128,30 +123,26 @@
                     <div class="hero-title">Comandante P.A.S.</div>
                     <div class="hero-specialty">🛡️ Experto en Protocolo P.A.S.</div>
                     <div class="hero-stats">
-                        <span>⚡ Liderazgo: ★★★★★</span>
-                        <span>🩺 Auxilio: ★★★★☆</span>
+                        <span>🛡️ Proteger - Avisar - Socorrer: ⭐⭐⭐⭐⭐</span>
                     </div>
-                    <div class="hero-select-btn" data-hero="vegita">SELECCIONAR</div>
-                    <div class="hero-lock" style="display: none;"></div>
+                    <button class="hero-select-btn" data-hero="vegita">SELECCIONAR</button>
                 </div>
             </div>
 
             <div class="hero-select-footer">
                 <button id="back-to-start-from-hero" class="btn-secondary">⬅ VOLVER</button>
-                <div class="hero-info-text" id="hero-info-text">
-                    💡 Selecciona tu héroe para comenzar la aventura
-                </div>
+                <div class="hero-info-text">💡 Selecciona tu héroe para comenzar la aventura</div>
             </div>
         </div>
     </div>
 
-    <!-- PANTALLA PRINCIPAL (MUNDOS) CON EL HÉROE SELECCIONADO -->
+    <!-- PANTALLA PRINCIPAL (MUNDOS) -->
     <div id="main-screen" class="screen">
         <div class="hud-professional">
             <div class="player-info">
                 <div class="player-avatar" id="player-avatar">🧑‍🚀</div>
                 <div class="player-details">
-                    <div class="player-name" id="player-name">Agente Novato</div>
+                    <div class="player-name" id="player-name">Agente PC</div>
                     <div class="player-rank" id="player-rank">Rango: Cadete</div>
                 </div>
             </div>
@@ -171,37 +162,37 @@
         </div>
 
         <div class="story-progress">
-            <div class="story-text" id="story-text">📖 El Director te necesita... ¡Conviértete en un verdadero héroe!</div>
+            <div class="story-text" id="story-text">📖 ¡Bienvenido a Protección Civil! Aprende a salvar vidas.</div>
             <div class="current-hero" id="current-hero-display"></div>
         </div>
 
-        <h2 class="worlds-title">🌍 MUNDOS DE ENTRENAMIENTO 🌍</h2>
+        <h2 class="worlds-title">🌍 MUNDOS DE ENTRENAMIENTO</h2>
         
         <div class="worlds-container">
             <div class="world-card" data-world="heal">
                 <div class="world-icon">🩺</div>
-                <h3>Poderes Curativos</h3>
+                <h3>Primeros Auxilios</h3>
                 <p>Especialidad: Ramona</p>
                 <div class="world-lock" id="lock-heal"></div>
                 <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
             </div>
             <div class="world-card" data-world="fire">
                 <div class="world-icon">🔥</div>
-                <h3>Maestro del Fuego</h3>
+                <h3>Prevención de Incendios</h3>
                 <p>Especialidad: Wilmer</p>
                 <div class="world-lock" id="lock-fire">🔒</div>
                 <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
             </div>
             <div class="world-card" data-world="earth">
                 <div class="world-icon">🌍</div>
-                <h3>Guardián de la Tierra</h3>
+                <h3>Seguridad Sísmica</h3>
                 <p>Especialidad: Reinaldo</p>
                 <div class="world-lock" id="lock-earth">🔒</div>
                 <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
             </div>
             <div class="world-card" data-world="pas">
                 <div class="world-icon">⚡</div>
-                <h3>Comandante P.A.S.</h3>
+                <h3>Protocolo P.A.S.</h3>
                 <p>Especialidad: Vegita</p>
                 <div class="world-lock" id="lock-pas">🔒</div>
                 <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
@@ -209,7 +200,7 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE JUEGO CON EL HÉROE VISIBLE -->
+    <!-- PANTALLA DE JUEGO -->
     <div id="game-screen" class="screen">
         <div class="game-header">
             <button id="exit-game" class="exit-btn">🏠 SALIR</button>
@@ -218,20 +209,19 @@
                 <span id="game-hero-name">Héroe</span>
             </div>
             <div class="mission-name" id="mission-name">Misión Activa</div>
-            <div class="mission-score">⭐ <span id="mission-score">0</span></div>
         </div>
         <div id="game-area" class="game-area"></div>
         <div id="game-feedback" class="game-feedback"></div>
     </div>
 
-    <!-- PANTALLA DE VICTORIA -->
+    <!-- VICTORIA -->
     <div id="victory-screen" class="screen">
         <div class="victory-epic">
             <div class="victory-fireworks" id="fireworks"></div>
             <div class="victory-content">
                 <div class="victory-icon">🏆</div>
                 <h1>¡MISIÓN CUMPLIDA!</h1>
-                <h2 id="victory-hero-name">Agente CAEE</h2>
+                <h2 id="victory-hero-name">Agente PC</h2>
                 <div class="victory-stats">
                     <div>⭐ Estrellas: <span id="victory-stars">0</span></div>
                     <div>📈 EXP Ganada: <span id="victory-xp">0</span></div>
@@ -242,26 +232,29 @@
         </div>
     </div>
 
-    <!-- PANTALLA DE GAME OVER -->
+    <!-- GAME OVER -->
     <div id="gameover-screen" class="screen">
         <div class="gameover-container">
             <div class="gameover-icon">💀</div>
             <h2>MISIÓN FALLIDA</h2>
-            <p>¡No te rindas, Agente! Los héroes también aprenden de sus errores.</p>
+            <p>¡No te rindas! Los héroes también aprenden de sus errores.</p>
             <button id="retry-mission" class="btn-primary">REINTENTAR MISIÓN</button>
             <button id="exit-after-fail" class="btn-secondary">SELECCIONAR OTRA MISIÓN</button>
         </div>
     </div>
 
-    <!-- TUTORIAL INICIAL -->
+    <!-- TUTORIAL -->
     <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
         <div class="tutorial-card">
             <div class="tutorial-arrow">👉</div>
-            <h3>¡Bienvenido, Agente!</h3>
-            <p id="tutorial-text">Primero debes seleccionar tu héroe. ¡Cada uno tiene habilidades únicas!</p>
+            <h3>¡Bienvenido a Protección Civil!</h3>
+            <p>Selecciona tu héroe y completa las misiones para aprender a salvar vidas.</p>
             <button id="next-tutorial" class="btn-primary">ENTENDIDO</button>
         </div>
     </div>
+
+    <!-- CONFETIS -->
+    <div id="confetti-container" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 1000;"></div>
 </div>
 
 <script src="script.js"></script>
