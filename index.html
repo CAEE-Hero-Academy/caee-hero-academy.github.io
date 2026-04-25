@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="description" content="CAEE Hero Academy - El pequeño héroe que salva vidas">
+    <title>CAEE Hero Academy | El pequeño héroe que salva vidas</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Quicksand:wght@300;400;500;600;700&family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="app">
+    <!-- PANTALLA DE CARGA -->
+    <div id="loading-screen" class="screen">
+        <div class="loader-container">
+            <div class="loader-logo">🛡️</div>
+            <div class="loader-bar">
+                <div class="loader-progress"></div>
+            </div>
+            <p>Cargando Academia CAEE...</p>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE INICIO -->
+    <div id="start-screen" class="screen">
+        <div class="hero-bg-animation">
+            <div class="particle-field" id="particle-field"></div>
+        </div>
+        
+        <div class="start-content">
+            <div class="logo-epic">
+                <div class="logo-shield">🛡️</div>
+                <h1 class="game-main-title">
+                    <span class="title-caee-glow">CAEE</span>
+                    <span class="title-academy-glow">HERO ACADEMY</span>
+                </h1>
+                <div class="title-subtitle">"El pequeño héroe que salva vidas"</div>
+            </div>
+
+            <div class="menu-buttons">
+                <button id="start-game-btn" class="btn-primary btn-glow-effect">
+                    <span class="btn-icon">🎮</span>
+                    <span class="btn-text">COMENZAR AVENTURA</span>
+                </button>
+            </div>
+
+            <div class="audio-control">
+                <button id="audio-toggle-main" class="audio-btn">🔊</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- PANTALLA DE SELECCIÓN DE HÉROE CON AVATARES -->
+    <!-- ============================================ -->
+    <div id="hero-select-screen" class="screen">
+        <div class="hero-select-container">
+            <div class="hero-select-header">
+                <div class="hero-select-icon">⭐</div>
+                <h1 class="hero-select-title">ELIGE A TU HÉROE</h1>
+                <div class="hero-select-subtitle">Cada héroe tiene habilidades especiales para salvar vidas</div>
+            </div>
+
+            <div class="heroes-grid" id="heroes-grid">
+                <!-- HÉROE 1: ALEX - MAESTRO DEL FUEGO -->
+                <div class="hero-card" data-hero="alex">
+                    <div class="hero-card-glow"></div>
+                    <div class="hero-visual" id="hero-visual-alex">
+                        <div class="hero-visual-avatar">🔥</div>
+                        <div class="hero-visual-badge">🧯</div>
+                    </div>
+                    <h3 class="hero-name">ALEX</h3>
+                    <div class="hero-title">Maestro del Fuego</div>
+                    <div class="hero-specialty">🧯 Experto en incendios y extintores</div>
+                    <div class="hero-stats">
+                        <span>💪 Fuego: ★★★★★</span>
+                        <span>🩺 Auxilio: ★★★☆☆</span>
+                    </div>
+                    <div class="hero-select-btn" data-hero="alex">SELECCIONAR</div>
+                    <div class="hero-lock" style="display: none;"></div>
+                </div>
+
+                <!-- HÉROE 2: SOFÍA - PODERES CURATIVOS -->
+                <div class="hero-card" data-hero="sofia">
+                    <div class="hero-card-glow"></div>
+                    <div class="hero-visual" id="hero-visual-sofia">
+                        <div class="hero-visual-avatar">🩺</div>
+                        <div class="hero-visual-badge">🩹</div>
+                    </div>
+                    <h3 class="hero-name">SOFÍA</h3>
+                    <div class="hero-title">Poderes Curativos</div>
+                    <div class="hero-specialty">🩹 Experta en primeros auxilios</div>
+                    <div class="hero-stats">
+                        <span>💪 Fuego: ★★★☆☆</span>
+                        <span>🩺 Auxilio: ★★★★★</span>
+                    </div>
+                    <div class="hero-select-btn" data-hero="sofia">SELECCIONAR</div>
+                    <div class="hero-lock" style="display: none;"></div>
+                </div>
+
+                <!-- HÉROE 3: MATEO - GUARDIÁN DE LA TIERRA -->
+                <div class="hero-card" data-hero="mateo">
+                    <div class="hero-card-glow"></div>
+                    <div class="hero-visual" id="hero-visual-mateo">
+                        <div class="hero-visual-avatar">🌍</div>
+                        <div class="hero-visual-badge">🏠</div>
+                    </div>
+                    <h3 class="hero-name">MATEO</h3>
+                    <div class="hero-title">Guardián de la Tierra</div>
+                    <div class="hero-specialty">🏠 Experto en seguridad sísmica</div>
+                    <div class="hero-stats">
+                        <span>🌍 Sismo: ★★★★★</span>
+                        <span>🩺 Auxilio: ★★★☆☆</span>
+                    </div>
+                    <div class="hero-select-btn" data-hero="mateo">SELECCIONAR</div>
+                    <div class="hero-lock">🔒 COMPLETA MISIONES</div>
+                </div>
+
+                <!-- HÉROE 4: LUNA - DETECTIVE DE RIESGOS -->
+                <div class="hero-card" data-hero="luna">
+                    <div class="hero-card-glow"></div>
+                    <div class="hero-visual" id="hero-visual-luna">
+                        <div class="hero-visual-avatar">🔍</div>
+                        <div class="hero-visual-badge">⚠️</div>
+                    </div>
+                    <h3 class="hero-name">LUNA</h3>
+                    <div class="hero-title">Detective de Riesgos</div>
+                    <div class="hero-specialty">⚠️ Experta en detectar peligros</div>
+                    <div class="hero-stats">
+                        <span>🔍 Riesgos: ★★★★★</span>
+                        <span>🩺 Auxilio: ★★★★☆</span>
+                    </div>
+                    <div class="hero-select-btn" data-hero="luna">SELECCIONAR</div>
+                    <div class="hero-lock">🔒 COMPLETA MISIONES</div>
+                </div>
+
+                <!-- HÉROE 5: KAI - COMANDANTE P.A.S. -->
+                <div class="hero-card" data-hero="kai">
+                    <div class="hero-card-glow"></div>
+                    <div class="hero-visual" id="hero-visual-kai">
+                        <div class="hero-visual-avatar">⚡</div>
+                        <div class="hero-visual-badge">🛡️</div>
+                    </div>
+                    <h3 class="hero-name">KAI</h3>
+                    <div class="hero-title">Comandante P.A.S.</div>
+                    <div class="hero-specialty">🛡️ Experto en Protocolo P.A.S.</div>
+                    <div class="hero-stats">
+                        <span>⚡ Liderazgo: ★★★★★</span>
+                        <span>🩺 Auxilio: ★★★★☆</span>
+                    </div>
+                    <div class="hero-select-btn" data-hero="kai">SELECCIONAR</div>
+                    <div class="hero-lock">🔒 COMPLETA MISIONES</div>
+                </div>
+            </div>
+
+            <div class="hero-select-footer">
+                <button id="back-to-start-from-hero" class="btn-secondary">⬅ VOLVER</button>
+                <div class="hero-info-text" id="hero-info-text">
+                    💡 Selecciona tu héroe para comenzar la aventura
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA PRINCIPAL (MUNDOS) CON EL HÉROE SELECCIONADO -->
+    <div id="main-screen" class="screen">
+        <div class="hud-professional">
+            <div class="player-info">
+                <div class="player-avatar" id="player-avatar">🧑‍🚀</div>
+                <div class="player-details">
+                    <div class="player-name" id="player-name">Agente Novato</div>
+                    <div class="player-rank" id="player-rank">Rango: Cadete</div>
+                </div>
+            </div>
+            <div class="stats-bars">
+                <div class="xp-bar-container">
+                    <div class="xp-label">EXP</div>
+                    <div class="xp-bar-bg">
+                        <div class="xp-bar-fill" id="xp-fill" style="width: 0%"></div>
+                    </div>
+                    <div class="xp-numbers"><span id="current-xp">0</span>/<span id="next-xp">100</span></div>
+                </div>
+                <div class="stars-display">
+                    <span>⭐</span>
+                    <span id="total-stars">0</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="story-progress">
+            <div class="story-text" id="story-text">📖 El Director te necesita... ¡Conviértete en un verdadero héroe!</div>
+            <div class="current-hero" id="current-hero-display"></div>
+        </div>
+
+        <h2 class="worlds-title">🌍 MUNDOS DE ENTRENAMIENTO 🌍</h2>
+        
+        <div class="worlds-container">
+            <div class="world-card" data-world="heal">
+                <div class="world-icon">🩺</div>
+                <h3>Poderes Curativos</h3>
+                <p>Especialidad: Sofía</p>
+                <div class="world-lock" id="lock-heal"></div>
+                <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="world-card" data-world="fire">
+                <div class="world-icon">🔥</div>
+                <h3>Maestro del Fuego</h3>
+                <p>Especialidad: Alex</p>
+                <div class="world-lock" id="lock-fire">🔒</div>
+                <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="world-card" data-world="earth">
+                <div class="world-icon">🌍</div>
+                <h3>Guardián de la Tierra</h3>
+                <p>Especialidad: Mateo</p>
+                <div class="world-lock" id="lock-earth">🔒</div>
+                <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="world-card" data-world="risks">
+                <div class="world-icon">🔍</div>
+                <h3>Detective de Riesgos</h3>
+                <p>Especialidad: Luna</p>
+                <div class="world-lock" id="lock-risks">🔒</div>
+                <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
+            </div>
+            <div class="world-card" data-world="pas">
+                <div class="world-icon">⚡</div>
+                <h3>Comandante P.A.S.</h3>
+                <p>Especialidad: Kai</p>
+                <div class="world-lock" id="lock-pas">🔒</div>
+                <div class="world-progress"><div class="world-progress-fill" style="width: 0%"></div></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE JUEGO CON EL HÉROE VISIBLE -->
+    <div id="game-screen" class="screen">
+        <div class="game-header">
+            <button id="exit-game" class="exit-btn">🏠 SALIR</button>
+            <div class="hero-game-info">
+                <span id="game-hero-icon">🧑‍🚀</span>
+                <span id="game-hero-name">Héroe</span>
+            </div>
+            <div class="mission-name" id="mission-name">Misión Activa</div>
+            <div class="mission-score">⭐ <span id="mission-score">0</span></div>
+        </div>
+        <div id="game-area" class="game-area"></div>
+        <div id="hero-animation-area" class="hero-animation-area"></div>
+        <div id="game-feedback" class="game-feedback"></div>
+    </div>
+
+    <!-- PANTALLA DE VICTORIA -->
+    <div id="victory-screen" class="screen">
+        <div class="victory-epic">
+            <div class="victory-fireworks" id="fireworks"></div>
+            <div class="victory-content">
+                <div class="victory-icon">🏆</div>
+                <h1>¡MISIÓN CUMPLIDA!</h1>
+                <h2 id="victory-hero-name">Agente CAEE</h2>
+                <div class="victory-stats">
+                    <div>⭐ Estrellas: <span id="victory-stars">0</span></div>
+                    <div>📈 EXP Ganada: <span id="victory-xp">0</span></div>
+                </div>
+                <div class="hero-rescue-animation" id="rescue-animation"></div>
+                <button id="continue-to-worlds" class="btn-primary">CONTINUAR AVENTURA ➡</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- PANTALLA DE GAME OVER -->
+    <div id="gameover-screen" class="screen">
+        <div class="gameover-container">
+            <div class="gameover-icon">💀</div>
+            <h2>MISIÓN FALLIDA</h2>
+            <p>¡No te rindas, Agente! Los héroes también aprenden de sus errores.</p>
+            <button id="retry-mission" class="btn-primary">REINTENTAR MISIÓN</button>
+            <button id="exit-after-fail" class="btn-secondary">SELECCIONAR OTRA MISIÓN</button>
+        </div>
+    </div>
+
+    <!-- TUTORIAL INICIAL -->
+    <div id="tutorial-overlay" class="tutorial-overlay" style="display: none;">
+        <div class="tutorial-card">
+            <div class="tutorial-arrow">👉</div>
+            <h3>¡Bienvenido, Agente!</h3>
+            <p id="tutorial-text">Primero debes seleccionar tu héroe. ¡Cada uno tiene habilidades únicas!</p>
+            <button id="next-tutorial" class="btn-primary">ENTENDIDO</button>
+        </div>
+    </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
