@@ -109,9 +109,8 @@ function updateRank() {
     }
     gameData.player.rank = newRank.name;
     
-    if (document.getElementById('player-rank')) {
-        document.getElementById('player-rank').textContent = `Rango: ${gameData.player.rank}`;
-    }
+    const rankEl = document.getElementById('player-rank');
+    if (rankEl) rankEl.textContent = `Rango: ${gameData.player.rank}`;
     
     const nextRank = ranks.find(r => r.minXP > gameData.player.xp);
     if (nextRank) {
@@ -120,19 +119,20 @@ function updateRank() {
         const xpNeeded = nextRank.minXP - currentRankXP;
         const percent = (xpInCurrent / xpNeeded) * 100;
         
-        if (document.getElementById('xp-fill')) {
-            document.getElementById('xp-fill').style.width = `${percent}%`;
-            document.getElementById('current-xp').textContent = xpInCurrent;
-            document.getElementById('next-xp').textContent = xpNeeded;
-        }
+        const fillEl = document.getElementById('xp-fill');
+        const currentXpEl = document.getElementById('current-xp');
+        const nextXpEl = document.getElementById('next-xp');
+        
+        if (fillEl) fillEl.style.width = `${percent}%`;
+        if (currentXpEl) currentXpEl.textContent = xpInCurrent;
+        if (nextXpEl) nextXpEl.textContent = xpNeeded;
     }
 }
 
 function addStars(amount) {
     gameData.player.totalStars += amount;
-    if (document.getElementById('total-stars')) {
-        document.getElementById('total-stars').textContent = gameData.player.totalStars;
-    }
+    const starsEl = document.getElementById('total-stars');
+    if (starsEl) starsEl.textContent = gameData.player.totalStars;
     saveGame();
 }
 
@@ -147,9 +147,13 @@ function completeMission(earnedStars, earnedXP, rescueAnimation) {
     
     showRescueAnimation(rescueAnimation);
     
-    document.getElementById('victory-stars').textContent = earnedStars;
-    document.getElementById('victory-xp').textContent = earnedXP;
-    document.getElementById('victory-hero-name').textContent = gameData.player.name;
+    const starsSpan = document.getElementById('victory-stars');
+    const xpSpan = document.getElementById('victory-xp');
+    const heroNameSpan = document.getElementById('victory-hero-name');
+    
+    if (starsSpan) starsSpan.textContent = earnedStars;
+    if (xpSpan) xpSpan.textContent = earnedXP;
+    if (heroNameSpan) heroNameSpan.textContent = gameData.player.name;
     
     setScreen('victory');
     launchFireworks();
@@ -157,7 +161,7 @@ function completeMission(earnedStars, earnedXP, rescueAnimation) {
     gameData.player.currentMissionIndex++;
     saveGame();
     
-    // Desbloquear mundos secuencialmente
+    // Desbloquear mundos
     if (gameData.player.currentWorld === 'heal' && !gameData.unlockedWorlds.includes('fire')) {
         gameData.unlockedWorlds.push('fire');
         showTemporaryMessage('🌟 ¡NUEVO MUNDO: MAESTRO DEL FUEGO DESBLOQUEADO! 🌟');
@@ -203,13 +207,18 @@ function showTemporaryMessage(msg) {
 
 function showGameFeedback(msg, isError = false) {
     const fb = document.getElementById('game-feedback');
+    if (!fb) return;
+    
     fb.innerHTML = `<div style="background: ${isError ? 'rgba(255,50,50,0.8)' : 'rgba(0,255,100,0.8)'}; padding: 15px; border-radius: 30px;">
         ${isError ? '❌' : '✅'} ${msg}
     </div>`;
     if (isError) {
         playSound('error');
-        document.getElementById('game-area').classList.add('error-shake');
-        setTimeout(() => document.getElementById('game-area').classList.remove('error-shake'), 500);
+        const gameArea = document.getElementById('game-area');
+        if (gameArea) {
+            gameArea.classList.add('error-shake');
+            setTimeout(() => gameArea.classList.remove('error-shake'), 500);
+        }
     } else {
         playSound('click');
     }
@@ -228,22 +237,24 @@ function setScreen(screenId) {
     if (screenId === 'main') {
         updateMainUI();
     }
-    if (screenId === 'hero-select') {
-        updateHeroSelectUI();
-    }
     if (screenId === 'game') {
         updateGameHeroUI();
     }
 }
 
 function updateMainUI() {
-    document.getElementById('player-name').textContent = gameData.player.name;
-    document.getElementById('player-avatar').textContent = gameData.player.heroIcon;
-    updateRank();
-    document.getElementById('total-stars').textContent = gameData.player.totalStars;
+    const nameEl = document.getElementById('player-name');
+    const avatarEl = document.getElementById('player-avatar');
+    const starsEl = document.getElementById('total-stars');
+    const heroDisplayEl = document.getElementById('current-hero-display');
     
-    if (document.getElementById('current-hero-display')) {
-        document.getElementById('current-hero-display').innerHTML = `
+    if (nameEl) nameEl.textContent = gameData.player.name;
+    if (avatarEl) avatarEl.textContent = gameData.player.heroIcon;
+    if (starsEl) starsEl.textContent = gameData.player.totalStars;
+    updateRank();
+    
+    if (heroDisplayEl) {
+        heroDisplayEl.innerHTML = `
             🎖️ HÉROE ACTUAL: ${gameData.player.name} 
             <span style="font-size: 1.5rem;">${gameData.player.heroIcon}</span>
             <span style="font-size: 1rem;">${gameData.player.heroBadge}</span>
@@ -269,57 +280,39 @@ function updateMainUI() {
 }
 
 function updateGameHeroUI() {
-    document.getElementById('game-hero-icon').textContent = gameData.player.heroIcon;
-    document.getElementById('game-hero-name').textContent = gameData.player.name;
+    const iconEl = document.getElementById('game-hero-icon');
+    const nameEl = document.getElementById('game-hero-name');
+    
+    if (iconEl) iconEl.textContent = gameData.player.heroIcon;
+    if (nameEl) nameEl.textContent = gameData.player.name;
 }
 
-function updateHeroSelectUI() {
-    for (const [key, hero] of Object.entries(gameData.heroes)) {
-        const card = document.querySelector(`.hero-card[data-hero="${key}"]`);
-        if (card) {
-            if (hero.unlocked) {
-                card.style.opacity = '1';
-                const lockDiv = card.querySelector('.hero-lock');
-                const selectBtn = card.querySelector('.hero-select-btn');
-                if (lockDiv) lockDiv.style.display = 'none';
-                if (selectBtn) selectBtn.style.display = 'block';
-                
-                const visualDiv = card.querySelector('.hero-visual');
-                if (visualDiv) {
-                    visualDiv.style.borderColor = hero.color;
-                }
-            } else {
-                card.style.opacity = '0.7';
-                const lockDiv = card.querySelector('.hero-lock');
-                const selectBtn = card.querySelector('.hero-select-btn');
-                if (lockDiv) lockDiv.style.display = 'block';
-                if (selectBtn) selectBtn.style.display = 'none';
-            }
-        }
-    }
-}
-
+// ========== SELECCIÓN DE HÉROE ==========
 function selectHero(heroKey) {
-    if (!gameData.heroes[heroKey].unlocked) {
+    const hero = gameData.heroes[heroKey];
+    if (!hero || !hero.unlocked) {
         playSound('error');
-        showTemporaryMessage(`🔒 ${gameData.heroes[heroKey].name} aún no está disponible. Completa más misiones para desbloquearlo.`);
+        showTemporaryMessage(`🔒 ${hero?.name || 'Héroe'} no disponible.`);
         return;
     }
     
     gameData.selectedHero = heroKey;
-    gameData.player.name = gameData.heroes[heroKey].name;
-    gameData.player.heroIcon = gameData.heroes[heroKey].icon;
-    gameData.player.heroBadge = gameData.heroes[heroKey].badge;
+    gameData.player.name = hero.name;
+    gameData.player.heroIcon = hero.icon;
+    gameData.player.heroBadge = hero.badge;
+    
     playSound('victory');
     showTemporaryMessage(`✨ ¡${gameData.player.name} está listo para salvar vidas! ✨`);
     setScreen('main');
     saveGame();
 }
 
+// ========== MISIONES ==========
 function startMission(missionId) {
     gameData.currentMission = missionId;
-    document.getElementById('mission-name').textContent = `Misión: ${missionId.toUpperCase()}`;
-    document.getElementById('mission-score').textContent = '0';
+    const missionEl = document.getElementById('mission-name');
+    if (missionEl) missionEl.textContent = `Misión: ${missionId.toUpperCase()}`;
+    
     updateGameHeroUI();
     
     if (MiniGames[missionId]) {
@@ -347,6 +340,8 @@ MiniGames.pas = {
         ];
         const s = scenarios[Math.floor(Math.random() * scenarios.length)];
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🛡️ PROTOCOLO P.A.S. 📢🩺</h3>
             <p style="font-size: 1.2rem; text-align: center;">${s.text}</p>
@@ -373,6 +368,8 @@ MiniGames.pas = {
 MiniGames.signos = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🫀 DETECTA SIGNOS VITALES</h3>
             <p>Selecciona los 3 signos vitales básicos:</p>
@@ -393,7 +390,9 @@ MiniGames.signos = {
                 const val = btn.dataset.val;
                 if (!selected.includes(val) && val !== 'presion' && selected.length < 3) {
                     selected.push(val);
-                    selectedDiv.innerHTML += `<span style="background: cyan; padding: 5px 10px; border-radius: 20px;">${btn.textContent}</span>`;
+                    if (selectedDiv) {
+                        selectedDiv.innerHTML += `<span style="background: cyan; padding: 5px 10px; border-radius: 20px;">${btn.textContent}</span>`;
+                    }
                     playSound('click');
                 }
                 if (selected.length === 3) {
@@ -418,6 +417,8 @@ MiniGames.matriz = {
         ];
         const q = questions[Math.floor(Math.random() * questions.length)];
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">⚡ MATRIZ DE ACCIÓN RÁPIDA</h3>
             <p style="font-size: 1.2rem;">${q.text}</p>
@@ -445,6 +446,8 @@ MiniGames.matriz = {
 MiniGames.extintor = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🧯 SIMULADOR DE EXTINTOR</h3>
             <div style="background: rgba(255,50,0,0.3); padding: 20px; border-radius: 30px; text-align: left;">
@@ -456,15 +459,18 @@ MiniGames.extintor = {
             <button id="extinguish-action" class="option-btn" style="background: #ff4400; font-size: 1.3rem;">🔥 APAGAR FUEGO 🔥</button>
         `;
         
-        document.getElementById('extinguish-action').onclick = () => {
-            completeMission(3, 35, 'extintor');
-        };
+        const btn = document.getElementById('extinguish-action');
+        if (btn) {
+            btn.onclick = () => completeMission(3, 35, 'extintor');
+        }
     }
 };
 
 MiniGames.clasificacion = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🔥 CLASIFICACIÓN DE FUEGOS</h3>
             <p>Fuego de aceite de cocina → ¿Clase?</p>
@@ -491,6 +497,8 @@ MiniGames.clasificacion = {
 MiniGames.peligros = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🔍 DETECTOR DE PELIGROS</h3>
             <p>¿Cuál es un peligro de incendio?</p>
@@ -517,6 +525,8 @@ MiniGames.peligros = {
 MiniGames.sismico = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🌍 ¡SISMO! DEFENSA SÍSMICA</h3>
             <p style="font-size: 1.3rem; animation: shake 0.5s infinite;">🏢⚠️ ¡TIEMBLA FUERTE! ⚠️🏢</p>
@@ -543,6 +553,8 @@ MiniGames.sismico = {
 MiniGames.zonas = {
     start() {
         const container = document.getElementById('game-area');
+        if (!container) return;
+        
         container.innerHTML = `
             <h3 style="color: cyan;">🏠 ZONAS SEGURAS</h3>
             <p>¿Dónde debes protegerte durante un sismo?</p>
@@ -572,8 +584,10 @@ MiniGames.evacuacion = {
         const exitPos = { x: 4, y: 4 };
         const walls = [[1,1], [1,2], [2,1], [3,3]];
         
-        function renderMaze() {
+        const renderMaze = () => {
             const container = document.getElementById('game-area');
+            if (!container) return;
+            
             let html = '<h3 style="color: cyan;">🚪 EVACUACIÓN SEGURA - LABERINTO</h3>';
             html += '<p>Lleva al héroe a la salida (🟢)</p>';
             html += '<div class="maze-container">';
@@ -596,13 +610,18 @@ MiniGames.evacuacion = {
             html += '</div>';
             container.innerHTML = html;
             
-            document.getElementById('move-up').onclick = () => movePlayer(-1, 0);
-            document.getElementById('move-down').onclick = () => movePlayer(1, 0);
-            document.getElementById('move-left').onclick = () => movePlayer(0, -1);
-            document.getElementById('move-right').onclick = () => movePlayer(0, 1);
-        }
+            const upBtn = document.getElementById('move-up');
+            const downBtn = document.getElementById('move-down');
+            const leftBtn = document.getElementById('move-left');
+            const rightBtn = document.getElementById('move-right');
+            
+            if (upBtn) upBtn.onclick = () => movePlayer(-1, 0);
+            if (downBtn) downBtn.onclick = () => movePlayer(1, 0);
+            if (leftBtn) leftBtn.onclick = () => movePlayer(0, -1);
+            if (rightBtn) rightBtn.onclick = () => movePlayer(0, 1);
+        };
         
-        function movePlayer(dx, dy) {
+        const movePlayer = (dx, dy) => {
             const newX = playerPos.x + dx;
             const newY = playerPos.y + dy;
             
@@ -619,7 +638,7 @@ MiniGames.evacuacion = {
                     showGameFeedback('Hay una pared, no puedes pasar', true);
                 }
             }
-        }
+        };
         
         renderMaze();
     }
@@ -635,7 +654,7 @@ MiniGames.examen = {
         let currentQ = 0;
         let score = 0;
         
-        function showQuestion() {
+        const showQuestion = () => {
             if (currentQ >= questions.length) {
                 const earnedStars = score === questions.length ? 5 : Math.floor(score * 1.5);
                 completeMission(earnedStars, 50 + (score * 10), 'default');
@@ -644,6 +663,8 @@ MiniGames.examen = {
             
             const q = questions[currentQ];
             const container = document.getElementById('game-area');
+            if (!container) return;
+            
             container.innerHTML = `
                 <h3 style="color: cyan;">📝 EXAMEN FINAL - AGENTE CAEE</h3>
                 <p>Pregunta ${currentQ + 1}/${questions.length}</p>
@@ -652,20 +673,24 @@ MiniGames.examen = {
                 <button id="submit-exam" class="option-btn">Responder</button>
             `;
             
-            document.getElementById('submit-exam').onclick = () => {
-                const answer = document.getElementById('exam-answer').value.toLowerCase().trim();
-                const isValid = q.valid.some(v => answer.includes(v));
-                
-                if (isValid) {
-                    showGameFeedback('✅ ¡Correcto!');
-                    score++;
-                } else {
-                    showGameFeedback(`❌ Incorrecto. Respuesta: ${q.a}`, true);
-                }
-                currentQ++;
-                setTimeout(showQuestion, 2000);
-            };
-        }
+            const submitBtn = document.getElementById('submit-exam');
+            if (submitBtn) {
+                submitBtn.onclick = () => {
+                    const answerInput = document.getElementById('exam-answer');
+                    const answer = answerInput ? answerInput.value.toLowerCase().trim() : '';
+                    const isValid = q.valid.some(v => answer.includes(v));
+                    
+                    if (isValid) {
+                        showGameFeedback('✅ ¡Correcto!');
+                        score++;
+                    } else {
+                        showGameFeedback(`❌ Incorrecto. Respuesta: ${q.a}`, true);
+                    }
+                    currentQ++;
+                    setTimeout(showQuestion, 2000);
+                };
+            }
+        };
         
         showQuestion();
     }
@@ -767,7 +792,8 @@ document.getElementById('exit-after-fail')?.addEventListener('click', () => {
 
 document.getElementById('audio-toggle-main')?.addEventListener('click', () => {
     audioEnabled = !audioEnabled;
-    document.getElementById('audio-toggle-main').textContent = audioEnabled ? '🔊' : '🔇';
+    const btn = document.getElementById('audio-toggle-main');
+    if (btn) btn.textContent = audioEnabled ? '🔊' : '🔇';
     playSound('click');
 });
 
@@ -788,7 +814,7 @@ document.querySelectorAll('.hero-card').forEach(card => {
             selectHero(heroKey);
         } else {
             playSound('error');
-            showTemporaryMessage(`🔒 ${gameData.heroes[heroKey]?.name || 'Héroe'} bloqueado. Completa misiones para desbloquear.`);
+            showTemporaryMessage(`🔒 ${gameData.heroes[heroKey]?.name || 'Héroe'} bloqueado.`);
         }
     });
 });
@@ -797,7 +823,7 @@ document.querySelectorAll('.hero-card').forEach(card => {
 document.querySelectorAll('.world-card[data-world]').forEach(card => {
     card.addEventListener('click', () => {
         if (!gameData.selectedHero) {
-            showTemporaryMessage('⚠️ Primero debes seleccionar un héroe en la pantalla anterior');
+            showTemporaryMessage('⚠️ Primero debes seleccionar un héroe');
             setScreen('hero-select');
             return;
         }
@@ -823,12 +849,14 @@ window.addEventListener('load', () => {
     updateRank();
     
     setTimeout(() => {
-        document.getElementById('loading-screen').style.display = 'none';
+        const loadingScreen = document.getElementById('loading-screen');
+        if (loadingScreen) loadingScreen.style.display = 'none';
         setScreen('start');
         
         if (!localStorage.getItem('tutorial_shown')) {
             setTimeout(() => {
-                document.getElementById('tutorial-overlay').style.display = 'flex';
+                const tutorial = document.getElementById('tutorial-overlay');
+                if (tutorial) tutorial.style.display = 'flex';
             }, 500);
             localStorage.setItem('tutorial_shown', 'true');
         }
@@ -836,7 +864,8 @@ window.addEventListener('load', () => {
 });
 
 document.getElementById('next-tutorial')?.addEventListener('click', () => {
-    document.getElementById('tutorial-overlay').style.display = 'none';
+    const tutorial = document.getElementById('tutorial-overlay');
+    if (tutorial) tutorial.style.display = 'none';
 });
 
 document.body.addEventListener('click', () => {
@@ -845,4 +874,4 @@ document.body.addEventListener('click', () => {
     }
 }, { once: true });
 
-console.log('🎮 CAEE Hero Academy - ¡Juego listo! Héroe: Ramona, Wilmer, Reinaldo, Vegita');
+console.log('🎮 CAEE Hero Academy - Héroes: Ramona, Wilmer, Reinaldo, Vegita');
