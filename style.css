@@ -237,9 +237,7 @@ body {
     cursor: pointer;
 }
 
-/* ============================================ */
 /* ESTILOS DE PERSONAJES VISUALES */
-/* ============================================ */
 .hero-visual {
     position: relative;
     width: 120px;
@@ -623,7 +621,7 @@ body {
     gap: 10px;
 }
 
-/* PANTALLA DE JUEGO CON HÉROE */
+/* PANTALLA DE JUEGO */
 .game-header {
     display: flex;
     justify-content: space-between;
@@ -687,18 +685,6 @@ body {
     gap: 20px;
 }
 
-.hero-animation-area {
-    margin: 15px;
-    padding: 20px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 30px;
-    text-align: center;
-    min-height: 100px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
 .game-feedback {
     text-align: center;
     margin: 15px;
@@ -707,7 +693,6 @@ body {
     font-weight: bold;
 }
 
-/* MINIJUEGOS */
 .option-btn {
     background: linear-gradient(135deg, #1a1a3e, #0a0a2a);
     border: 2px solid var(--neon-cyan);
@@ -727,7 +712,6 @@ body {
     transform: scale(1.03);
 }
 
-/* LABERINTO */
 .maze-container {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
